@@ -1,77 +1,52 @@
+#!/usr/bin/env python3
 """
 Basic usage examples for TC Translator
 """
 
-from terminex import Terminex, translate
+from tc_translate import TCTranslator, Translator
 
-# Example 1: Basic translation with domain
-print("=" * 50)
-print("Example 1: Basic Translation")
-print("=" * 50)
+# Example 1: Using TCTranslator for agriculture domain
+print("=== Example 1: Agriculture Translation ===")
+agric_translator = TCTranslator(domain='agric', target_lang='twi')
 
-translator = Terminex()
+text = "The farmer uses an abattoir and manages his acreage efficiently."
+result = agric_translator.translate(text)
 
-result = translator.translate(
-    "The abattoir uses acaricide for pest control on the acreage",
-    target_language="twi",
-    domain="agric"
+print(f"Original: {result['original']}")
+print(f"Translated: {result['text']}")
+print(f"Terms replaced: {result['replacements_count']}")
+print()
+
+# Example 2: Using the Google Translate-like API
+print("=== Example 2: Google Translate-like API ===")
+translator = Translator()
+
+# With terminology control
+result_with_terms = translator.translate(
+    "acaricide and adjuvant are important",
+    src='en',
+    dest='twi',
+    domain='agric'
 )
+print(f"With terminology control: {result_with_terms['text']}")
 
-print(f"Original: {result.original_text}")
-print(f"Translated: {result.translated_text}")
-print(f"Terms preserved: {len(result.terms_used)}")
-for term in result.terms_used:
-    print(f"  - {term['term']} → {term['translation']}")
-print()
-
-# Example 2: Translation without domain (uses all glossaries)
-print("=" * 50)
-print("Example 2: Multi-Domain Translation")
-print("=" * 50)
-
-result = translator.translate(
-    "Agricultural aeroponics systems can improve acre-foot water efficiency",
-    target_language="twi"
+# Without terminology control (regular Google Translate)
+result_without_terms = translator.translate(
+    "acaricide and adjuvant are important",
+    src='en',
+    dest='twi'
 )
-
-print(f"Translated: {result.translated_text}")
-print(f"Terms used: {[t['term'] for t in result.terms_used]}")
+print(f"Without terminology control: {result_without_terms['text']}")
 print()
 
-# Example 3: Check available languages and domains
-print("=" * 50)
-print("Example 3: Available Resources")
-print("=" * 50)
-
-print(f"Available languages: {translator.available_languages()}")
-print(f"Available domains: {translator.available_domains()}")
-print(f"Domains for 'twi': {translator.available_domains('twi')}")
-print()
-
-# Example 4: Batch translation
-print("=" * 50)
-print("Example 4: Batch Translation")
-print("=" * 50)
-
+# Example 3: Batch translation
+print("=== Example 3: Batch Translation ===")
 texts = [
-    "The abattoir processes livestock",
-    "Apply acaricide to control pests",
-    "Measure the acreage accurately"
+    "abattoir for animals",
+    "acreage measurement",
+    "aerial seeding method"
 ]
 
-results = translator.translate(texts, target_language="twi", domain="agric")
-
-for i, result in enumerate(results, 1):
-    print(f"{i}. {result.original_text}")
-    print(f"   → {result.translated_text}")
-print()
-
-# Example 5: API-compatible function
-print("=" * 50)
-print("Example 5: API-Compatible Interface")
-print("=" * 50)
-
-result = translate("The adjuvant improves pesticide effectiveness", dest="twi", domain="agric")
-print(f"Text: {result.text}")
-print(f"Source: {result.src} → Dest: {result.dest}")
-print(f"Terms used: {result.extra_data['terms_used']}")
+batch_results = agric_translator.batch_translate(texts)
+for i, result in enumerate(batch_results):
+    print(f"{i+1}. {result['original']} → {result['text']}")
