@@ -2,7 +2,7 @@ import asyncio
 import logging
 from typing import Optional, Dict, Any
 
-from googletrans import AsyncTranslator as GoogleTranslator
+from googletrans import Translator as GoogleTranslator
 from .terminology_manager import TerminologyManager
 from .language_codes import convert_lang_code, is_google_supported
 
